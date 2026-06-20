@@ -1,0 +1,34 @@
+name: Nightly Performance Check
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  performance-benchmark:
+    name: Performance Thresholds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore + Build
+        run: |
+          dotnet restore DeskBuddyLegends.sln
+          dotnet build tests/DeskBuddyLegends.Tests.Performance/DeskBuddyLegends.Tests.Performance.csproj -c Release
+
+      - name: Run all benchmarks with threshold assertions
+        run: >
+          dotnet run --project tests/DeskBuddyLegends.Tests.Performance
+          --no-build -c Release -- --filter * --exporters json github --artifacts ./nightly-results
+
+      - name: Post summary to GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-benchmark-${{ github.run_number }}
+          path: ./nightly-results

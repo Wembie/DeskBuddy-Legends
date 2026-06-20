@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <AssemblyName>DeskBuddyLegends.Tests.Performance</AssemblyName>
+    <RootNamespace>DeskBuddyLegends.Tests.Performance</RootNamespace>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DeskBuddyLegends.Core\DeskBuddyLegends.Core.csproj" />
+    <ProjectReference Include="..\..\src\DeskBuddyLegends.Infrastructure\DeskBuddyLegends.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
+  </ItemGroup>
+</Project>

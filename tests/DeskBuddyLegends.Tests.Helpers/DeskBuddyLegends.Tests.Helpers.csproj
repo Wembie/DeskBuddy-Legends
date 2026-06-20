@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <AssemblyName>DeskBuddyLegends.Tests.Helpers</AssemblyName>
+    <RootNamespace>DeskBuddyLegends.Tests.Helpers</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DeskBuddyLegends.Core\DeskBuddyLegends.Core.csproj" />
+    <ProjectReference Include="..\..\src\DeskBuddyLegends.Infrastructure\DeskBuddyLegends.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="FluentAssertions" />
+  </ItemGroup>
+</Project>

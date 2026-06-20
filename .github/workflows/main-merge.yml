@@ -1,0 +1,75 @@
+name: Main Merge
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  integration-tests:
+    name: Integration Tests + Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore DeskBuddyLegends.sln
+
+      - name: Build
+        run: dotnet build DeskBuddyLegends.sln --no-restore -c Release
+
+      - name: Unit tests
+        run: >
+          dotnet test tests/DeskBuddyLegends.Tests.Unit/DeskBuddyLegends.Tests.Unit.csproj
+          --no-restore --no-build -c Release
+          --collect:"XPlat Code Coverage"
+          --results-directory ./coverage
+
+      - name: Integration tests
+        run: >
+          dotnet test tests/DeskBuddyLegends.Tests.Integration/DeskBuddyLegends.Tests.Integration.csproj
+          --no-restore --no-build -c Release
+          --collect:"XPlat Code Coverage"
+          --results-directory ./coverage
+        env:
+          TEST_SQLITE_PATH: ':memory:'
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/**/coverage.cobertura.xml
+          fail_ci_if_error: false
+
+  performance-regression:
+    name: Performance Regression Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore DeskBuddyLegends.sln
+
+      - name: Build performance project
+        run: dotnet build tests/DeskBuddyLegends.Tests.Performance/DeskBuddyLegends.Tests.Performance.csproj --no-restore -c Release
+
+      - name: Run benchmarks
+        run: >
+          dotnet run --project tests/DeskBuddyLegends.Tests.Performance
+          --no-build -c Release -- --filter * --exporters json --artifacts ./benchmark-results
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: ./benchmark-results
