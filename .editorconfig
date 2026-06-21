@@ -3,7 +3,7 @@ root = true
 [*]
 indent_style = space
 indent_size = 4
-end_of_line = crlf
+end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
@@ -42,6 +42,16 @@ csharp_style_prefer_null_check_over_type_check = true:warning
 csharp_style_namespace_declarations = file_scoped:warning
 
 # Naming conventions
+# Private const fields: PascalCase (checked first — more specific)
+dotnet_naming_rule.private_constants_rule.symbols = private_constants
+dotnet_naming_rule.private_constants_rule.style = pascal_case_style
+dotnet_naming_rule.private_constants_rule.severity = warning
+dotnet_naming_symbols.private_constants.applicable_kinds = field
+dotnet_naming_symbols.private_constants.applicable_accessibilities = private
+dotnet_naming_symbols.private_constants.required_modifiers = const
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+# Private non-const fields: _camelCase
 dotnet_naming_rule.private_fields_rule.symbols = private_fields
 dotnet_naming_rule.private_fields_rule.style = private_field_style
 dotnet_naming_rule.private_fields_rule.severity = warning

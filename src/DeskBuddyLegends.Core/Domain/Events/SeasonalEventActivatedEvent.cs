@@ -1,7 +1,7 @@
 namespace DeskBuddyLegends.Core.Domain.Events;
 
 public sealed record SeasonalEventActivatedEvent(
-    string EventId,
+    string SeasonalEventId,
     string EventName,
     DateTime EndsAt
 ) : DomainEvent;

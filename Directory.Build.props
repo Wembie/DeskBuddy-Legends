@@ -19,7 +19,6 @@
     <Version>$(GameVersion)</Version>
     <AssemblyVersion>$(GameVersion).0</AssemblyVersion>
     <FileVersion>$(GameVersion).0</FileVersion>
-    <AnalysisMode>Recommended</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 </Project>

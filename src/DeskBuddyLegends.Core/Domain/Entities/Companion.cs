@@ -26,7 +26,16 @@ public sealed class Companion
 
     private const int MaxLevel = 100;
 
-    private Companion() { }
+    private Companion()
+    {
+        Id = null!;
+        Name = null!;
+        Rarity = null!;
+        Stage = null!;
+        TotalXp = null!;
+        EmotionalState = null!;
+        ActiveSkin = null!;
+    }
 
     public Companion(
         CompanionId id,

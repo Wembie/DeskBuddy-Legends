@@ -38,25 +38,24 @@ public sealed record Rarity
     public static readonly Rarity Celestial = new(RarityTier.Celestial, 4.0,     "Celestial", "#00BCD4");
     public static readonly Rarity Void      = new(RarityTier.Void,      1.0,     "Void",      "#212121");
 
-    private static readonly IReadOnlyDictionary<RarityTier, Rarity> Registry =
-        new Dictionary<RarityTier, Rarity>
-        {
-            [RarityTier.Common]    = Common,
-            [RarityTier.Uncommon]  = Uncommon,
-            [RarityTier.Rare]      = Rare,
-            [RarityTier.Epic]      = Epic,
-            [RarityTier.Legendary] = Legendary,
-            [RarityTier.Mythic]    = Mythic,
-            [RarityTier.Celestial] = Celestial,
-            [RarityTier.Void]      = Void,
-        };
+    private static readonly Dictionary<RarityTier, Rarity> _registry = new()
+    {
+        [RarityTier.Common]    = Common,
+        [RarityTier.Uncommon]  = Uncommon,
+        [RarityTier.Rare]      = Rare,
+        [RarityTier.Epic]      = Epic,
+        [RarityTier.Legendary] = Legendary,
+        [RarityTier.Mythic]    = Mythic,
+        [RarityTier.Celestial] = Celestial,
+        [RarityTier.Void]      = Void,
+    };
 
     public static Rarity FromTier(RarityTier tier) =>
-        Registry.TryGetValue(tier, out var rarity)
+        _registry.TryGetValue(tier, out var rarity)
             ? rarity
             : throw new ArgumentOutOfRangeException(nameof(tier), $"Unknown rarity tier: {tier}");
 
-    public static IReadOnlyCollection<Rarity> All => Registry.Values;
+    public static IReadOnlyCollection<Rarity> All => _registry.Values;
 
     public bool IsAtLeast(RarityTier minimumTier) => Tier >= minimumTier;
 
