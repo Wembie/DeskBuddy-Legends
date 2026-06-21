@@ -1,0 +1,24 @@
+<Project>
+  <!-- Read version from single source of truth: /VERSION file -->
+  <PropertyGroup>
+    <VersionFilePath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)VERSION'))</VersionFilePath>
+    <GameVersion>$([System.IO.File]::ReadAllText('$(VersionFilePath)').Trim())</GameVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <NoWarn>$(NoWarn);NU1903</NoWarn>
+    <Copyright>Copyright © 2026 DeskBuddy Legends</Copyright>
+    <Authors>DeskBuddy Legends Team</Authors>
+    <Company>DeskBuddy Legends</Company>
+    <Product>DeskBuddy Legends</Product>
+    <Version>$(GameVersion)</Version>
+    <AssemblyVersion>$(GameVersion).0</AssemblyVersion>
+    <FileVersion>$(GameVersion).0</FileVersion>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,93 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Check formatting (Core)
+        run: dotnet format src/DeskBuddyLegends.Core/DeskBuddyLegends.Core.csproj --verify-no-changes --verbosity diagnostic
+
+      - name: Check formatting (Infrastructure)
+        run: dotnet format src/DeskBuddyLegends.Infrastructure/DeskBuddyLegends.Infrastructure.csproj --verify-no-changes --verbosity diagnostic
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore packages
+        run: dotnet restore DeskBuddyLegends.sln
+
+      - name: Build Core
+        run: dotnet build src/DeskBuddyLegends.Core/DeskBuddyLegends.Core.csproj --no-restore -c Release
+
+      - name: Run unit tests
+        run: >
+          dotnet test tests/DeskBuddyLegends.Tests.Unit/DeskBuddyLegends.Tests.Unit.csproj
+          --no-restore
+          --logger "trx;LogFileName=unit-test-results.trx"
+          --collect:"XPlat Code Coverage"
+          --results-directory ./coverage
+          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+
+      - name: Coverage gate (Core >= 80%)
+        uses: danielpalme/ReportGenerator-GitHub-Action@5
+        with:
+          reports: './coverage/**/coverage.cobertura.xml'
+          targetdir: './coverage/report'
+          reporttypes: 'MarkdownSummaryGithub'
+          minimumcoverageThresholds: 'line:80'
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: ./coverage
+
+  build-validation:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore DeskBuddyLegends.sln
+
+      - name: Build all (no Godot yet — Core + Infrastructure + Tests)
+        run: dotnet build DeskBuddyLegends.sln --no-restore -c Release

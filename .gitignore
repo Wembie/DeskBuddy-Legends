@@ -1,0 +1,124 @@
+# ============================================================
+# .NET / C#
+# ============================================================
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+.vs/
+.vscode/settings.json
+.vscode/.ropeproject
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+**/Properties/launchSettings.json
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+BenchmarkDotNet.Artifacts/
+
+# ============================================================
+# Godot 4
+# ============================================================
+.godot/
+*.translation
+export_presets.cfg
+*.import
+android/
+# Godot auto-generated C# project — keep the .csproj we write, not Godot's temp files
+# (Godot regenerates DeskBuddyLegends.Game.csproj — we keep it in git)
+
+# ============================================================
+# Steam / Steamworks
+# ============================================================
+steam_appid.txt
+# Never commit Steam credentials
+steamcmd/
+*.vdf.secret
+
+# ============================================================
+# Secrets & credentials — never commit
+# ============================================================
+*.env
+.env
+.env.*
+secrets.json
+appsettings.*.json
+!appsettings.json
+*.pfx
+*.p12
+*.key
+*.pem
+*.cer
+private_key*
+
+# ============================================================
+# Save files / user data
+# ============================================================
+*.db
+*.db-shm
+*.db-wal
+*.db.sig
+save.db*
+
+# ============================================================
+# OS artifacts
+# ============================================================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# ============================================================
+# Build outputs / release artifacts
+# ============================================================
+dist/
+release/
+build/
+*.exe
+!tools/**/*.exe
+*.x86_64
+*.pck
+*.zip
+*.7z
+
+# ============================================================
+# IDE
+# ============================================================
+.idea/
+*.iml
+*.ipr
+*.iws
+*.suo
+*.ncrunch*
+_NCrunch_*
+nCrunchTemp_*
+*.DotSettings.user
+.rider/
+
+# ============================================================
+# Logs & crash dumps
+# ============================================================
+*.log
+crash_*.txt
+logs/
+
+# ============================================================
+# Art pipeline intermediates (source kept, exports committed)
+# ============================================================
+art/Source/**/*.aseprite.bak
+art/Source/**/*.psd.bak
+__pycache__/
+*.pyc
