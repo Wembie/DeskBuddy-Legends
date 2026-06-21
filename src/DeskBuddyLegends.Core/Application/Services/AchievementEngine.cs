@@ -11,49 +11,49 @@ namespace DeskBuddyLegends.Core.Application.Services;
 /// </summary>
 public sealed class AchievementEngine
 {
-    private readonly Dictionary<string, List<Achievement>> _byMetric = new(StringComparer.Ordinal);
-    private readonly Dictionary<AchievementId, Achievement> _all = [];
-    private PlayerProfile? _playerProfile;
+    private readonly Dictionary<string, List<Achievement>> byMetric = new(StringComparer.Ordinal);
+    private readonly Dictionary<AchievementId, Achievement> all = [];
+    private PlayerProfile? playerProfile;
 
-    public int TotalLoaded => _all.Count;
+    public int TotalLoaded => all.Count;
 
     public void LoadDefinitions(IEnumerable<Achievement> achievements)
     {
-        _byMetric.Clear();
-        _all.Clear();
+        byMetric.Clear();
+        all.Clear();
 
         foreach (var achievement in achievements)
         {
-            _all[achievement.Id] = achievement;
+            all[achievement.Id] = achievement;
 
             var metric = achievement.Criteria.Metric;
-            if (!_byMetric.TryGetValue(metric, out var bucket))
+            if (!byMetric.TryGetValue(metric, out var bucket))
             {
                 bucket = [];
-                _byMetric[metric] = bucket;
+                byMetric[metric] = bucket;
             }
 
             bucket.Add(achievement);
         }
     }
 
-    public void SetPlayerContext(PlayerProfile profile) => _playerProfile = profile;
+    public void SetPlayerContext(PlayerProfile profile) => playerProfile = profile;
 
     public IReadOnlyList<Achievement> Handle(IDomainEvent domainEvent)
     {
-        if (_playerProfile is null) return [];
+        if (playerProfile is null) return [];
 
         var metrics = ExtractMetrics(domainEvent);
         var newlyUnlocked = new List<Achievement>();
 
         foreach (var (metric, value) in metrics)
         {
-            if (!_byMetric.TryGetValue(metric, out var candidates)) continue;
+            if (!byMetric.TryGetValue(metric, out var candidates)) continue;
 
             foreach (var achievement in candidates)
             {
                 if (achievement.IsUnlocked) continue;
-                if (_playerProfile.HasAchievement(achievement.Id)) continue;
+                if (playerProfile.HasAchievement(achievement.Id)) continue;
 
                 var unlocked = achievement.TryUnlock(value);
                 if (unlocked)
@@ -67,13 +67,13 @@ public sealed class AchievementEngine
     }
 
     public AchievementProgress? GetProgress(AchievementId id) =>
-        _all.TryGetValue(id, out var a) ? a.Progress : null;
+        all.TryGetValue(id, out var a) ? a.Progress : null;
 
-    public IReadOnlyList<Achievement> GetAll() => _all.Values.ToList().AsReadOnly();
+    public IReadOnlyList<Achievement> GetAll() => all.Values.ToList().AsReadOnly();
 
     private IEnumerable<(string Metric, double Value)> ExtractMetrics(IDomainEvent evt)
     {
-        if (_playerProfile is null) yield break;
+        if (playerProfile is null) yield break;
 
         switch (evt)
         {
@@ -90,7 +90,7 @@ public sealed class AchievementEngine
                 break;
 
             case AchievementUnlockedEvent:
-                yield return ("TotalAchievements", _playerProfile.UnlockedAchievements.Count);
+                yield return ("TotalAchievements", playerProfile.UnlockedAchievements.Count);
                 break;
 
             case CapsuleOpenedEvent:
@@ -98,10 +98,10 @@ public sealed class AchievementEngine
                 break;
 
             case ActivitySessionCompletedEvent e:
-                yield return ("TotalKeystrokes", _playerProfile.TotalKeystrokes);
-                yield return ("TotalMouseEvents", _playerProfile.TotalMouseEvents);
+                yield return ("TotalKeystrokes", playerProfile.TotalKeystrokes);
+                yield return ("TotalMouseEvents", playerProfile.TotalMouseEvents);
                 yield return ("SessionDurationSeconds", e.Duration.TotalSeconds);
-                yield return ("TotalSessionSeconds", _playerProfile.TotalSessionSeconds);
+                yield return ("TotalSessionSeconds", playerProfile.TotalSessionSeconds);
                 break;
         }
     }

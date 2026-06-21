@@ -27,16 +27,16 @@ public sealed record EmotionalState
         DecayAfterSeconds = decayAfterSeconds;
     }
 
-    public static EmotionalState Neutral     => new(EmotionalStateType.Neutral,      1.0f, -1);
-    public static EmotionalState Happy       => new(EmotionalStateType.Happy,        0.8f, 300);
-    public static EmotionalState Excited     => new(EmotionalStateType.Excited,      1.0f, 60);
-    public static EmotionalState Sad         => new(EmotionalStateType.Sad,          0.6f, -1);
-    public static EmotionalState Curious     => new(EmotionalStateType.Curious,      0.5f, 120);
-    public static EmotionalState Bored       => new(EmotionalStateType.Bored,        0.4f, -1);
-    public static EmotionalState Tired       => new(EmotionalStateType.Tired,        0.3f, -1);
+    public static EmotionalState Neutral => new(EmotionalStateType.Neutral, 1.0f, -1);
+    public static EmotionalState Happy => new(EmotionalStateType.Happy, 0.8f, 300);
+    public static EmotionalState Excited => new(EmotionalStateType.Excited, 1.0f, 60);
+    public static EmotionalState Sad => new(EmotionalStateType.Sad, 0.6f, -1);
+    public static EmotionalState Curious => new(EmotionalStateType.Curious, 0.5f, 120);
+    public static EmotionalState Bored => new(EmotionalStateType.Bored, 0.4f, -1);
+    public static EmotionalState Tired => new(EmotionalStateType.Tired, 0.3f, -1);
     public static EmotionalState Affectionate => new(EmotionalStateType.Affectionate, 0.9f, 600);
-    public static EmotionalState Sleeping    => new(EmotionalStateType.Sleeping,     1.0f, -1);
-    public static EmotionalState Working     => new(EmotionalStateType.Working,      0.7f, 30);
+    public static EmotionalState Sleeping => new(EmotionalStateType.Sleeping, 1.0f, -1);
+    public static EmotionalState Working => new(EmotionalStateType.Working, 0.7f, 30);
 
     public bool IsTransient => DecayAfterSeconds > 0;
 

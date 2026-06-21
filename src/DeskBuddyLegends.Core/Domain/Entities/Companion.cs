@@ -7,8 +7,8 @@ namespace DeskBuddyLegends.Core.Domain.Entities;
 
 public sealed class Companion
 {
-    private readonly List<IDomainEvent> _domainEvents = [];
-    private readonly HashSet<SkinId> _ownedSkins = [];
+    private readonly List<IDomainEvent> domainEvents = [];
+    private readonly HashSet<SkinId> ownedSkins = [];
 
     public CompanionId Id { get; }
     public string Name { get; private set; }
@@ -21,8 +21,8 @@ public sealed class Companion
     public SkinId ActiveSkin { get; private set; }
     public bool IsUnlocked { get; private set; }
     public DateTime LastInteractionUtc { get; private set; }
-    public IReadOnlyCollection<SkinId> OwnedSkins => _ownedSkins;
-    public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    public IReadOnlyCollection<SkinId> OwnedSkins => ownedSkins;
+    public IReadOnlyList<IDomainEvent> DomainEvents => domainEvents.AsReadOnly();
 
     private const int MaxLevel = 100;
 
@@ -56,7 +56,7 @@ public sealed class Companion
         IsUnlocked = isUnlocked;
         LastInteractionUtc = DateTime.UtcNow;
 
-        _ownedSkins.Add(SkinId.Default);
+        ownedSkins.Add(SkinId.Default);
     }
 
     public void Unlock()
@@ -74,7 +74,7 @@ public sealed class Companion
         TotalXp = TotalXp.Add(amount);
         LastInteractionUtc = DateTime.UtcNow;
 
-        _domainEvents.Add(new XpAwardedEvent(Id, amount, TotalXp));
+        domainEvents.Add(new XpAwardedEvent(Id, amount, TotalXp));
 
         TryLevelUp();
     }
@@ -87,14 +87,14 @@ public sealed class Companion
         EmotionalState = newState;
         LastInteractionUtc = DateTime.UtcNow;
 
-        _domainEvents.Add(new EmotionalStateChangedEvent(Id, previous, newState));
+        domainEvents.Add(new EmotionalStateChangedEvent(Id, previous, newState));
     }
 
     public void EquipSkin(SkinId skinId)
     {
         Guard.NotNull(skinId);
 
-        if (!_ownedSkins.Contains(skinId))
+        if (!ownedSkins.Contains(skinId))
             throw new SkinNotOwnedException(skinId);
 
         ActiveSkin = skinId;
@@ -103,7 +103,7 @@ public sealed class Companion
     public void UnlockSkin(SkinId skinId)
     {
         Guard.NotNull(skinId);
-        _ownedSkins.Add(skinId);
+        ownedSkins.Add(skinId);
     }
 
     public void Evolve(EvolutionStage newStage)
@@ -117,10 +117,10 @@ public sealed class Companion
         var previous = Stage;
         Stage = newStage;
 
-        _domainEvents.Add(new CompanionEvolvedEvent(Id, previous, newStage));
+        domainEvents.Add(new CompanionEvolvedEvent(Id, previous, newStage));
     }
 
-    public void ClearDomainEvents() => _domainEvents.Clear();
+    public void ClearDomainEvents() => domainEvents.Clear();
 
     private void TryLevelUp()
     {
@@ -130,7 +130,7 @@ public sealed class Companion
         {
             var previous = Level;
             Level++;
-            _domainEvents.Add(new CompanionLeveledUpEvent(Id, previous, Level));
+            domainEvents.Add(new CompanionLeveledUpEvent(Id, previous, Level));
         }
     }
 

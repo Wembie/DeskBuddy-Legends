@@ -96,10 +96,10 @@ public sealed class Achievement
         op switch
         {
             ComparisonOperator.GreaterThanOrEqual => value >= threshold,
-            ComparisonOperator.GreaterThan        => value > threshold,
-            ComparisonOperator.Equal              => Math.Abs(value - threshold) < 0.001,
-            ComparisonOperator.LessThanOrEqual    => value <= threshold,
-            ComparisonOperator.LessThan           => value < threshold,
+            ComparisonOperator.GreaterThan => value > threshold,
+            ComparisonOperator.Equal => Math.Abs(value - threshold) < 0.001,
+            ComparisonOperator.LessThanOrEqual => value <= threshold,
+            ComparisonOperator.LessThan => value < threshold,
             _ => false
         };
 }

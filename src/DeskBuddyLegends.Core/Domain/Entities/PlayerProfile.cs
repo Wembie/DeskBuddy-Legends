@@ -6,9 +6,9 @@ namespace DeskBuddyLegends.Core.Domain.Entities;
 
 public sealed class PlayerProfile
 {
-    private readonly List<IDomainEvent> _domainEvents = [];
-    private readonly HashSet<CompanionId> _unlockedCompanions = [];
-    private readonly HashSet<AchievementId> _unlockedAchievements = [];
+    private readonly List<IDomainEvent> domainEvents = [];
+    private readonly HashSet<CompanionId> unlockedCompanions = [];
+    private readonly HashSet<AchievementId> unlockedAchievements = [];
 
     public PlayerId Id { get; }
     public int PlayerLevel { get; private set; }
@@ -20,9 +20,9 @@ public sealed class PlayerProfile
     public DateTime FirstPlayedUtc { get; }
     public DateTime LastSeenUtc { get; private set; }
     public CompanionId? ActiveCompanionId { get; private set; }
-    public IReadOnlyCollection<CompanionId> UnlockedCompanions => _unlockedCompanions;
-    public IReadOnlyCollection<AchievementId> UnlockedAchievements => _unlockedAchievements;
-    public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    public IReadOnlyCollection<CompanionId> UnlockedCompanions => unlockedCompanions;
+    public IReadOnlyCollection<AchievementId> UnlockedAchievements => unlockedAchievements;
+    public IReadOnlyList<IDomainEvent> DomainEvents => domainEvents.AsReadOnly();
 
     private const int MaxPlayerLevel = 500;
 
@@ -56,7 +56,7 @@ public sealed class PlayerProfile
     public void UnlockCompanion(CompanionId companionId)
     {
         Guard.NotNull(companionId);
-        _unlockedCompanions.Add(companionId);
+        unlockedCompanions.Add(companionId);
     }
 
     public void SetActiveCompanion(CompanionId companionId)
@@ -69,15 +69,15 @@ public sealed class PlayerProfile
     {
         Guard.NotNull(achievementId);
 
-        if (_unlockedAchievements.Contains(achievementId)) return false;
+        if (unlockedAchievements.Contains(achievementId)) return false;
 
-        _unlockedAchievements.Add(achievementId);
-        _domainEvents.Add(new AchievementUnlockedEvent(Id, achievementId, steamApiKey));
+        unlockedAchievements.Add(achievementId);
+        domainEvents.Add(new AchievementUnlockedEvent(Id, achievementId, steamApiKey));
         return true;
     }
 
     public bool HasAchievement(AchievementId achievementId) =>
-        _unlockedAchievements.Contains(achievementId);
+        unlockedAchievements.Contains(achievementId);
 
     public void UpdateLoginStreak(DateOnly today)
     {
@@ -86,7 +86,7 @@ public sealed class PlayerProfile
         LastSeenUtc = DateTime.UtcNow;
     }
 
-    public void ClearDomainEvents() => _domainEvents.Clear();
+    public void ClearDomainEvents() => domainEvents.Clear();
 
     private void TryLevelUp()
     {

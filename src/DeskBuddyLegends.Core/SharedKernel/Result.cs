@@ -24,23 +24,23 @@ public sealed class Result<T>
     public bool IsFailure => !IsSuccess;
     public string? Error { get; }
 
-    private readonly T? _value;
+    private readonly T? value;
 
     public T Value => IsSuccess
-        ? _value!
+        ? value!
         : throw new InvalidOperationException($"Cannot access Value of a failed Result: {Error}");
 
-    private Result(T value)
+    private Result(T val)
     {
         IsSuccess = true;
-        _value = value;
+        value = val;
         Error = null;
     }
 
     private Result(string error)
     {
         IsSuccess = false;
-        _value = default;
+        value = default;
         Error = error;
     }
 

@@ -21,11 +21,11 @@ public sealed record XpEngineConfig(
 
 public sealed class XpEngine
 {
-    private readonly XpEngineConfig _config;
+    private readonly XpEngineConfig config;
 
     public XpEngine(XpEngineConfig? config = null)
     {
-        _config = config ?? XpEngineConfig.Default;
+        this.config = config ?? XpEngineConfig.Default;
     }
 
     /// <summary>
@@ -40,20 +40,20 @@ public sealed class XpEngine
         if (genuineScore.IsSuspicious)
             return XpAmount.Zero;
 
-        var remainingDailyXp = _config.DailyXpCap - xpAwardedTodayAlready;
+        var remainingDailyXp = config.DailyXpCap - xpAwardedTodayAlready;
         if (remainingDailyXp <= 0)
             return XpAmount.Zero;
 
         var sessionHours = sessionDuration.TotalHours;
         var sessionBonus = Math.Min(
-            sessionHours * _config.SessionLengthBonusPerHour,
-            _config.MaxSessionLengthBonus
+            sessionHours * config.SessionLengthBonusPerHour,
+            config.MaxSessionLengthBonus
         );
 
-        var rawXp = _config.BaseXpPerBucket
+        var rawXp = config.BaseXpPerBucket
             * genuineScore.Value
             * (1.0 + sessionBonus)
-            * _config.EventMultiplier;
+            * config.EventMultiplier;
 
         var awarded = (long)Math.Floor(rawXp);
         var capped = Math.Min(awarded, remainingDailyXp);
@@ -61,5 +61,5 @@ public sealed class XpEngine
         return capped > 0 ? new XpAmount(capped) : XpAmount.Zero;
     }
 
-    public bool IsDailyCapped(long xpAwardedToday) => xpAwardedToday >= _config.DailyXpCap;
+    public bool IsDailyCapped(long xpAwardedToday) => xpAwardedToday >= config.DailyXpCap;
 }
