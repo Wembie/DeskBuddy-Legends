@@ -13,7 +13,11 @@ public sealed class Option<T>
     private Option() { HasValue = false; }
     private Option(T value) { _value = value; HasValue = true; }
 
-    public static Option<T> Some(T value) => new(Guard.NotNull(value));
+    public static Option<T> Some(T value)
+    {
+        if (value is null) throw new ArgumentNullException(nameof(value));
+        return new(value);
+    }
     public static Option<T> None() => new();
 
     public T GetValueOrDefault(T defaultValue) => HasValue ? _value! : defaultValue;
