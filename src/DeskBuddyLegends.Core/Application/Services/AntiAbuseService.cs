@@ -1,4 +1,5 @@
 using DeskBuddyLegends.Core.Domain.ValueObjects;
+using System.Linq;
 
 namespace DeskBuddyLegends.Core.Application.Services;
 
@@ -34,9 +35,8 @@ public sealed class AntiAbuseService
         if (timings.Count < 5) return 0.7;
 
         var buckets = new Dictionary<long, int>();
-        foreach (var t in timings)
+        foreach (var bucket in timings.Select(t => t / 10))
         {
-            var bucket = t / 10;
             buckets[bucket] = buckets.GetValueOrDefault(bucket) + 1;
         }
 
