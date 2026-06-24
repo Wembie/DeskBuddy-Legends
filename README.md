@@ -1,4 +1,4 @@
-# DeskBuddy Legends
+# DeskBuddy Legends <3
 
 > A desktop companion that lives on your screen and grows while you work, study, code, or play.
 
